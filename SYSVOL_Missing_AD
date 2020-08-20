@@ -2,19 +2,19 @@ SYSVOL share missing from a AD DC server.
 Run net share to look for it. 
 
 NETLOGON is not a folder, it is a share in the SYSVOL directory tree.
-
  
 
-SYSVOL is a directory on a DC server that is shared and is kept in SYNC . The content of the sysvol is a lot of domain and GOP stuff. An update to a GOP for example will be written to a disk, then the DFS will replicates the files and directories around. 
-
+SYSVOL is a directory on a DC server that is shared and is kept in SYNC . The content of the sysvol is a lot of domain and GPO stuff. 
+An update to a GPO for example will be written to a disk, then the DFS will replicates the files and directories around. 
 OK one event we did see when the syslog was missing, was “too old message” , over 60 some days , believe this was a root cause event. 
 
-The NEW DC was added ok, The AD sync tools said a-ok, BUT , the NETLOGON and SYSVOL share where missing. 
-
-Use the command “net share” to check and see the DC shares. Should see the SYSVOL AND the NETLOGON, the netlogon is a directory in the sysvol, so it is a dependent of the sysvol. 
+The NEW DC was added ok, The AD sync tools said a-ok, BUT , the NETLOGON and SYSVOL share are missing. 
+Use the command “net share” to check and see the DC shares. Should see the SYSVOL AND the NETLOGON, the netlogon is a directory in the
+sysvol, so it is a dependent of the sysvol. 
 
 
 1)	OK how to kick start the SYSVOL share , if its not sharing from the DC. 
+
 Edit the registry key to kick it, ON the DC where it is not working, 
 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters
 Change the value to sysvolready=1
@@ -31,23 +31,20 @@ DC=domain,DC=local > OU=Domain Controllers > CN=(DC NAME) > CN=DFSR-LocalSetting
 Change the value to false. This will stop the SYSVOL DSRF. 
 msDFSR-Enabled = FALSE
 
-Sync the AD so the other DC see the update. 
+Sync the AD so the other DCs see the update. 
 Repadmin /syncall /Adp 
 
 Run the command to push the update of the state of the SYSVOL DFSR.
 dfsrdiag pollad 
 
-If you want to see the DSRF add the console. 
+If you want to see the DSRF add in the console. 
 Add-WindowsFeature RSAT-DFS-Mgmt-Con
 
 Event ID 4114 should be in the event log, this is the SYSVOL repl disabled event. 
-
 Count to 30. 
-
 Reenable the SYSVOL DSRF sync. 
 
 Open adsi edit, edit the value, be sure to push apply. Read the editor path from the OU=Domain Controllers down.
-
 DC=domain,DC=local > OU=Domain Controllers > CN=(DC NAME) > CN=DFSR-LocalSettings > Domain System Volume > SYSVOL Subscription
 
 Change the value to false. This will stop the SYSVOL DSRF. 
@@ -71,6 +68,7 @@ READ THE FILE, will have a lot of info, need all the options so can we
 see any funky stuff. 
 Repadmin /kcc , watch for funky stuff. 
 
+
 Other handy AD commands.
 dcdiag /test:connectivity
 repadmin /kcc
@@ -78,12 +76,19 @@ REPADMIN /SHOWREPS
 REPADMIN /REPLSUM
 repadmin /showrepl DC_SERVER_NAME
 repadmin /syncall DC_SERVER_NAME /AeD
-dcdiag /v /c /d /e
+dcdiag /v /c /d /e > myfile.txt
 dsquery server  
+From MS tech support pages.
+For /f %i IN ('dsquery server -o rdn') do @echo %i && @(net view \\%i | find "SYSVOL") & echo 
+For /f %i IN ('dsquery server -o rdn') do @echo %i && @wmic /node:"%i" /namespace:\\root\microsoftdfs path dfsrreplicatedfolderinfo WHERE replicatedfoldername='SYSVOL share' get replicationgroupname,replicatedfoldername,state 
+wmic.exe /node:%computername% /namespace:\\root\microsoftdfs path DfsrMachineConfig get MaxOfflineTimeInDays 
+For /f %i IN ('dsquery server -o rdn') do @echo %i && @wmic /node:"%i" /namespace:\\root\microsoftdfs path DfsrMachineConfig get MaxOfflineTimeInDays 
+
 
 Check IP settings on all the AD servers.
 Look out for funky DNS Ip6 Address names to the AD servers that might be in the AD.
 https://social.technet.microsoft.com/Forums/windows/en-US/9a65c9f3-9f5e-4284-ad57-b838680cf0c5/ad-replication-issues-event-ids-1865-1311-1566
+
 
 Ensure the following dns setting on DC:
 1. Each DC / DNS server points to its private IP address as primary DNS server and other remote/local DNS servers as secondary in TCP/IP properties.
@@ -94,7 +99,6 @@ Do not put private DNS IP addresses in forwarder list.
 5.Assigning static IP address to DC if IP address is assigned by DHCP server to DC.It is strongly not recommended
 
 
-
 Check Sites in AD,
 https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/cc731294(v=ws.10)
 
@@ -103,8 +107,6 @@ https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server
 https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/cc732761(v=ws.10)
 
 https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/cc730718(v=ws.10)
-
-
 
 
 Ref;
@@ -122,5 +124,4 @@ https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server
 
 https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/cc730718(v=ws.10)
 
-
-
+The End. JB
