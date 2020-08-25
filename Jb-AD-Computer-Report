@@ -1,0 +1,52 @@
+
+# Report some of the details from computer accounts
+# Get-ADComputer -SearchBase  "OU=FOO,DC=foobar,DC=com" -Filter * -Properties *
+
+import-module ActiveDirectory
+
+$Collection = @()
+$obj = New-Object PsObject
+
+$OU="DC=foobar,DC=com" 
+
+#Name
+#SamAccountName
+#DistinguishedName
+#DNSHostName
+#PasswordLastSet
+#LastLogonDate
+#OperatingSystem
+#IPv4Address
+
+$result=(Get-ADComputer -SearchBase  $OU -Filter * -Properties *)
+
+$result | foreach-object {
+
+$Name=$_.Name
+$SamAccountName=$_.SamAccountName
+$DistinguishedName=$_.DistinguishedName
+$DNSHostName=$_.DNSHostName
+$PasswordLastSet=$_.PasswordLastSet
+$LastLogonDate=$_.LastLogonDate
+$OperatingSystem=$_.OperatingSystem
+$IPv4Address=$_.IPv4Address
+
+$f="Name";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($Name)
+$f="SamAccountName";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($SamAccountName)
+$f="DistinguishedName";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($DistinguishedName)
+$f="DNSHostName";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($DNSHostName)
+$f="PasswordLastSet";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($PasswordLastSet)
+$f="LastLogonDate";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($LastLogonDate)
+$f="OperatingSystem";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($OperatingSystem)
+$f="IPv4Address";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($IPv4Address)
+
+$Collection += $obj
+
+$obj = New-Object PsObject
+}
+
+$Collection |Export-Csv -NoTypeInformation -Delimiter ';' -Path AD.Computer.Details.$(get-date -format ddMMyyyy).csv
+
+# ende #
+
+
