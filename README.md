@@ -1,2 +1,2 @@
-# Tech-Info-AD-Linux-Etc
-Tech-Info-AD-Linux-Etc
+# Tech_Info_AD_Linux_Etc
+Tech_Info_AD_Linux_Etc
