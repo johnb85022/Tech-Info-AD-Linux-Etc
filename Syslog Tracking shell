@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Is a file missing, has a device not send info? 
+# past.history.txt record looks like
+# 10.59.48.6
+# Just the name or Ip that is sending to us. 
+# look at the regex below $RSYSLOGPATH/$host.$(date "+%Y.%m.%d.log")
+# dress up the regex to match up the format of your syslog file names. 
+# ps mapfile handy and fast. :) 
+#####
+
+PASTHISTORY="past.history.txt"
+RSYSLOGPATH="/home/rsyslog/remote"
+TODAYTMP="today.temp.txt"
+WORKINGDIR="/home/rsyslog/track.syslog"
+
+today_array=()
+past_array=()
+
+cd $WORKINGDIR
+
+# find offers fine tuning controls of what to see , type age, etc,
+
+if [[ -f $TODAYTMP ]]
+        then
+        rm $TODAYTMP
+        fi
+
+if [[ ! -f $PASTHISTORY ]]
+        then
+        printf "History file missing, makeing new history file."
+        mapfile today_array < <(find $RSYSLOGPATH -mtime 0 -type f -name "*.$(date "+%Y.%m.%d.log")" -printf "%f\n")
+        printf "%s\n" ${today_array[@]%%.$(date "+%Y.%m.%d.log")*}
+        printf "%s\n" ${today_array[@]%%.$(date "+%Y.%m.%d.log")*} > $PASTHISTORY
+        fi
+
+
+# history is name no date formated in the history file.
+mapfile past_array < $PASTHISTORY
+
+for host in ${past_array[@]}
+        do
+        ## printf "$host\n"
+        ## find $RSYSLOGPATH -mtime 0 -type f -name "$host.$(date "+%Y.%m.%d.log")" -ls
+        if [[  ! -f $RSYSLOGPATH/$host.$(date "+%Y.%m.%d.log") ]]
+                then
+                printf "Missing File for $host $RSYSLOGPATH/$host.$(date "+%Y.%m.%d.log")\n"
+        fi
+
+done
+
+# collect todays new names...
+mapfile today_array < <(find $RSYSLOGPATH -mtime 0 -type f -name "*.$(date "+%Y.%m.%d.log")" -printf "%f\n")
+# drop date to disk, we will use sort to merge the files
+printf "%s\n" ${today_array[@]%%.$(date "+%Y.%m.%d.log")*} > $TODAYTMP
+sort --random-sort -u $PASTHISTORY $TODAYTMP -o $PASTHISTORY
+printf "Data Set $(wc -l $PASTHISTORY) lines.\n"
+
+# end
