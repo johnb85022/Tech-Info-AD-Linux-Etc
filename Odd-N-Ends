@@ -1,0 +1,24 @@
+
+
+Date from ansible , ansible_date_time to see all formats, etc. 
+---
+- name: display date
+  hosts: dnshosteast001
+  tasks:
+    - debug: var=ansible_date_time.iso8601
+
+
+Handy use of grep , are the two files the same ? Note the order of the file names really changes things. 
+grep -vFxf yesterday.txt today.txt 
+
+Use file yesterday as the point of ref, the regeg to seek in the today file, in a way showing what has been added in to the
+today set. 
+grep -vFxf yesterday.txt today.txt
+
+What file and what line number we are talking about, the -n and -H are handy when debuging grep options. 
+grep -nHvFxf yesterday.txt today.txt
+
+If I flip the files, then I can see what has been dropped from today. 
+grep -vFxf today.txt yesterday.txt
+
+
