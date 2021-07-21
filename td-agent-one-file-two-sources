@@ -1,0 +1,27 @@
+# file name is a test file in the LA lab. Note the pos_file name, two names, 
+# this was a way to get around the single regex pattern problem 
+############## MX ##############
+<source>
+  @type tail
+  path /home/pala/10.100.100.10.2021.06.18.log
+  pos_file /var/log/td-agent/mxla.001.pos
+  tag mxla.1*
+<parse>
+@type regexp
+  expression /(?<datetime_MX>\S+\s+\d+\s+\d+[:]\d+[:]\d+)\s+(?<ip_MX>\S+)\s+\d+\s+\d+[.]\d+\s+\S+\s+(?<type_MX>flows)/
+</parse>
+</source>
+
+<source>
+  @type tail
+  path /home/pala/10.100.100.10.2021.06.18.log
+  pos_file /var/log/td-agent/mxla.002.pos
+  tag mxla.2*
+<parse>
+@type regexp
+  expression /(?<datetime_MX>\S+\s+\d+\s+\d+[:]\d+[:]\d+)\s+(?<ip_MX>\S+)\s+\d+\s+\d+[.]\d+\s+\S+\s+(?<type_MX>urls)/
+</parse>
+</source>
+
+The MX regex I did use , combo of urls and flows , it did munge the last few fields , but worked. 
+format /^(?<datetime_MX>\S+\s+\d+\s+\d+[:]\d+[:]\d+)\s+(?<ip_MX>\S+)\s+\d+\s+\d+[.]\d+\s+(?<name_MX>\S+)\s+(?<type_MX>(urls|flows\s\S+)).*src=(?<src_ip_MX>\S+)\sdst=(?<dst_ip_MX>\S+)\smac=(?<mac_MX>\S+)\s(?<payload_MX>.*)$/
