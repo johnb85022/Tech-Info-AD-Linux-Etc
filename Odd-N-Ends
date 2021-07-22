@@ -22,6 +22,9 @@ If I flip the files, then I can see what has been dropped from today.
 grep -vFxf today.txt yesterday.txt
 
 Handy tcpdumps I like.
+Good Web ref for tcpdump 
+https://danielmiessler.com/study/tcpdump/
+
 Examaple of filtering out stuff. -c helps to stop it if I forget.
 tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -c 99999
 
@@ -30,4 +33,9 @@ tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv
 
 Will try to open the packets and show us ASCCI 
 tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv -A 
+
+Simple this one IP to watch the flows. 
+tcpdump -vv -i ens128 'host 10.10.10.10' 
+
+
 
