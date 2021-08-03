@@ -36,7 +36,7 @@ tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv
 Will try to open the packets and show us ASCCI 
 tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv -A 
 
-Simple this one IP to watch the flows. 
+Simple watch this one IP to see the flows. 
 tcpdump -vv -i ens128 'host 10.10.10.10' 
 
 
