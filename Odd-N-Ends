@@ -7,6 +7,8 @@ Date from ansible , ansible_date_time to see all formats, etc.
   tasks:
     - debug: var=ansible_date_time.iso8601
 
+Use find to look at the proc pid tables , this example the VmSawp size used. 
+find /proc/*/status -exec cat {} \; |grep -e '^Pid:' -e VmSwap
 
 Handy use of grep , are the two files the same ? Note the order of the file names really changes things. 
 grep -vFxf yesterday.txt today.txt 
