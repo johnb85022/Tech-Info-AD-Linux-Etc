@@ -53,6 +53,7 @@ friday.yet.sh
 ::::::::::::::
 date |grep -q -e "Fri" && ( echo "FRIDAY" |cowsay|lolcat ) || echo no|cowsay|lolcat
 
-
+Handy nslookup option in windows nslookup, then do a zone.com. lookup, get you all the zone NS servers details. 
+set querytype=all 
 
 
