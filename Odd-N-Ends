@@ -43,5 +43,16 @@ tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv -A
 Simple watch this one IP to see the flows. 
 tcpdump -vv -i ens128 'host 10.10.10.10' 
 
+What day is it? Silly fun, not bad syntax examples. 
+::::::::::::::
+friday-yet.sh
+::::::::::::::
+date "+%A" |grep -q "Fri" && ( cowsay -f tux "$(date "+%A") YES"|lolcat -p 1 -F .01 -a ) || cowsay $(date "+%D %A")
+::::::::::::::
+friday.yet.sh
+::::::::::::::
+date |grep -q -e "Fri" && ( echo "FRIDAY" |cowsay|lolcat ) || echo no|cowsay|lolcat
+
+
 
 
