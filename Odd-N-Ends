@@ -65,3 +65,9 @@ Bling all the keys for the known hosts , drop context to the .ssh/know_hosts, by
 
 [ansible@srv005 ~]$ for x in $foo; do  echo $x ; ssh-keyscan $x ;done
 
+Handy DNS info, 
+See para 4.1.  RFC 1918 Zones
+https://github.com/johnb85022/Tech-Info-AD-Linux-Etc/blob/master/Syslog-Ng%20remote.conf
+
+...
+
