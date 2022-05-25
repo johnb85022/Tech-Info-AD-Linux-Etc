@@ -1,4 +1,10 @@
 
+A number of INET sources use the MC ending, this tr can help, simple fast.
+# use tr to clean the file from dos to unix
+tr -d '\r' < "$NRD_DOMAINS" > "$CLEAN_DOMAINS"
+
+Some times a just want clean data. The <> killed the html lines, 
+cat placeholder.txt  |tr -d "[:blank:]" |tr -d '\r'|tr '[:upper:]' '[:lower:]' |grep -v -e "^$" -e "[><]" > fooroo
 
 Date from ansible , ansible_date_time to see all formats, etc. 
 ---
