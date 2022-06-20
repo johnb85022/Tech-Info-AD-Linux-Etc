@@ -1,4 +1,8 @@
 
+I like this regex for IP sets
+grep -E "[[:space:]][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+"
+
+
 A number of INET sources use the MC ending, this tr can help, simple fast.
 # use tr to clean the file from dos to unix
 tr -d '\r' < "$NRD_DOMAINS" > "$CLEAN_DOMAINS"
