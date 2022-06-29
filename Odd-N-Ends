@@ -1,4 +1,11 @@
 
+Reminder, WireShark cap filters ARE not the same syntax as display filters. 
+https://wiki.wireshark.org/CaptureFilters#examples
+One I like, 
+net 10.10.10.20 or 10.10.10.21 
+THis one makes reading flows easy, 
+not broadcast and not multicast
+
 I like this regex for IP sets
 grep -E "[[:space:]][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+"
 
