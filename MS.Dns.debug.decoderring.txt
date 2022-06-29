@@ -59,6 +59,10 @@ Two examples below.
 Offical DNS and DNS Hex codes ref;
 https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
 
+Officeal DNS responce, good info and over view of baics dns flows.
+https://www.rfc-editor.org/rfc/rfc1035.html
+
+
 (?<QueryType>\s|R)\s \
 (?<Opcode>[A-Z]|\?)\s \
 
