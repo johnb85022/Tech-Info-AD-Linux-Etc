@@ -1,4 +1,9 @@
 
+Short and long domain names , good data cleaner , the tr -d '\r' helps a lot 
+grep -v -E "\S+[.]\S+[.]\S+" placeholder.txt |tr -s ' ' |tr -d ' ' |tr -d '\r' |tr '[:upper:]' '[:lower:]' |grep -v -e "^$" -e "[><]" |sort -ud > set.short.txt
+grep -E "\S+[.]\S+[.]\S+" placeholder.txt |cut -d '.' -f2,3 |tr -s ' ' |tr -d ' ' | tr -d '\r' |tr '[:upper:]' '[:lower:]' | grep -v -e "^$" -e "[><]" | sort -ud > set.long.txt
+
+  
 https://linux.die.net/man/1/grep
 [:alnum:], [:alpha:], [:cntrl:], [:digit:], [:graph:], [:lower:], [:print:], [:punct:], [:space:], [:upper:],
 and [:xdigit:]. For example, [[:alnum:]] means [0-9A-Za-z],
