@@ -1,4 +1,9 @@
 
+https://linux.die.net/man/1/grep
+[:alnum:], [:alpha:], [:cntrl:], [:digit:], [:graph:], [:lower:], [:print:], [:punct:], [:space:], [:upper:],
+and [:xdigit:]. For example, [[:alnum:]] means [0-9A-Za-z],
+
+
 Reminder, WireShark cap filters ARE not the same syntax as display filters. 
 https://wiki.wireshark.org/CaptureFilters#examples
 One I like, 
