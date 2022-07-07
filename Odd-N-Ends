@@ -1,4 +1,11 @@
 
+Export only the stub from the MS DNS with powershell, note the filter -eq Stub
+
+# CSV !! 
+get-DnsServerZone  |Where-Object -Property ZoneType -eq "Stub" |Select-Object Zonename|Get-DnsServerZone|select-object Zonename,zonetype, MasterServers  |export-csv -path .\mycsv.txt
+
+
+
 Short and long domain names , good data cleaner , the tr -d '\r' helps a lot 
 grep -v -E "\S+[.]\S+[.]\S+" placeholder.txt |tr -s ' ' |tr -d ' ' |tr -d '\r' |tr '[:upper:]' '[:lower:]' |grep -v -e "^$" -e "[><]" |sort -ud > set.short.txt
 grep -E "\S+[.]\S+[.]\S+" placeholder.txt |cut -d '.' -f2,3 |tr -s ' ' |tr -d ' ' | tr -d '\r' |tr '[:upper:]' '[:lower:]' | grep -v -e "^$" -e "[><]" | sort -ud > set.long.txt
