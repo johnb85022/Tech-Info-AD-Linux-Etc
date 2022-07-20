@@ -1,4 +1,8 @@
 
+Very good and simple json to csv py script. Good py example. Node is the name of the array at the very start of the json stream. 
+https://github.com/vinay20045/json-to-csv/blob/master/json_to_csv.py
+
+
 JQ has a -j option that can help sending flows to a shell pipe , its a work 
 around , but can be good for a limited number of fields. 
 jq -j '.[]._source.layers.frame'  pcap.json |grep frame.len |head -n2
@@ -7,6 +11,32 @@ jq -j '.[]._source.layers.frame'  pcap.json |grep frame.len |head -n2
 Export only the stub from the MS DNS with powershell, note the filter -eq Stub
 # CSV !! 
 get-DnsServerZone  |Where-Object -Property ZoneType -eq "Stub" |Select-Object Zonename|Get-DnsServerZone|select-object Zonename,zonetype, MasterServers  |export-csv -path .\mycsv.txt
+
+Loop over the STUB export , test the name lookup and record details
+# A loop from simple input.txt file.
+write-host $ARGS[0]
+$a = @()
+$a = Get-Content $ARGS[0]
+
+$a|ForEach-Object {
+$var=$($_)
+#Some-cmd $var
+
+$temp = $var -replace '"',''
+# write-host $temp
+$zonename=$temp.split(",")[0]
+# write-host $zonename
+$dnshost=$temp.split(",")[2].split(' ')[0]
+# write-host $dnshost
+
+## write-host "$zonename $dnshost"
+$answer=$(resolve-dnsname $zonename -server $dnshost -QuickTimeout -ErrorAction SilentlyContinue )
+
+#write-host "$zonename $dnshost" $answer| measure-object -Character
+write-host "$zonename $dnshost" $answer.length
+
+
+}
 
 
 Short and long domain names , good data cleaner , the tr -d '\r' helps a lot 
