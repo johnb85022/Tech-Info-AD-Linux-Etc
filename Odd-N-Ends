@@ -1,4 +1,13 @@
 
+Remember HOST keys are not user keys , some simple commands to help
+
+
+ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+
+This can be used to collect info the known_hosts file. 
+ssh-keyscan HOSTNAME 
+
 Very good and simple json to csv py script. Good py example. Node is the name of the array at the very start of the json stream. 
 https://github.com/vinay20045/json-to-csv/blob/master/json_to_csv.py
 
