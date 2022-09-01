@@ -1,0 +1,46 @@
+MS DNS log extract greps for shell.
+
+My log has some leader stuff, these only read the MS log parts
+The grep -o displays just the info found by the match
+Each match is done on one line of input
+The grep -e -e for is so each regex is seen by grep 
+Read as , this one, and this one and this one, 
+The -o needs to be before the -e, or you get a funky cant find this file message from grep 
+The paste at the end puts things back in to one line
+If you want CSV , then try paste - - - - -d ','
+Each '-' is telling paste how many adjacent lines to form as one, sort of a count of the colums
+
+
+Toss email server, 
+grep -v -e "FOO-SMTP.DOMAINFORU.COM"
+
+Newest file, ms log is my directory
+$(ls -Art mslog/file.*.log |tail -1|head -1 )
+
+Just the Snd and Rvc lines, 
+|grep -E -e "UDP Snd" -e "UDP Rcv" 
+ 
+Regex for the Snd and IP it is from
+|grep -E -o -e "UDP\sSnd\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+" 
+ 
+Regex for the Rcv and IP it is from 
+-o -e "UDP\sRcv\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+" 
+
+Regex for the address of the MS DNS server
+-o -e "\"client_addr\"\:\"[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+\"" 
+
+Regex for the doamin asked for by the requestor
+-o -e "\(.*\)" 
+
+Regex for the date/time from the MS DNS data
+-o -e "[[:digit:]]+[/][[:digit:]]+[/][[:digit:]]+[ ][[:digit:]]+[:][[:digit:]]+[:][[:digit:]]+[ ][AP][M]" 
+
+Some general clean up, MS DNS log data has a hard tab in the line thus '\011' 
+| tr -s ' '|tr '\011' ' ' |paste - - - -
+
+The whole line
+grep -v -e "SMTP.HAPPYCAMPING.COM" $(ls -Art mslog/file.*.log |tail -1|head -1 ) |grep -E -e "UDP Snd" -e "UDP Rcv" |grep -E -o -e "UDP\sSnd\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+" -o -e "UDP\sRcv\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+" -o -e "\"client_addr\"\:\"[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+\"" -o -e "\(.*\)" -o -e "[[:digit:]]+[/][[:digit:]]+[/][[:digit:]]+[ ][[:digit:]]+[:][[:digit:]]+[:][[:digit:]]+[ ][AP][M]" | tr -s ' '|tr '\011' ' ' |paste - - - -
+
+# the end.
+
+
