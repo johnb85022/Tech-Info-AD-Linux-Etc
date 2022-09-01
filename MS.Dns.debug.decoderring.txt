@@ -45,7 +45,7 @@ Break out of each field from the example lines below, example of each data type 
 13- D -OR- A DR -OR DR 
 14- NOERROR ]
 15- A 
-16- (13)wstglbgalileo(11)bbinsglobal(3)com(0)
+16- (13)wstglbfoo(11)xxzynglobal(3)com(0)
 
 The flag 12 13 14 start [ and end ]
 The question name have (#) that count the char in the segment 
@@ -59,7 +59,7 @@ Two examples below.
 Offical DNS and DNS Hex codes ref;
 https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
 
-Officeal DNS responce, good info and over view of baics dns flows.
+Official DNS responce, good info and over view of baics dns flows.
 https://www.rfc-editor.org/rfc/rfc1035.html
 
 
@@ -89,12 +89,12 @@ cat foo |cut -d '[' -f2|cut -d ']' -f1|sort -u  |grep -E -e "^[0-9]"
 8584 A  R  REFUSED
 
 Example DNS records
-2/4/2021 9:31:50 AM 14D8 PACKET  000002094C4C67D0 UDP Rcv 10.176.101.55   9b3b   Q [0001   D   NOERROR] A      (13)wstglbgalileo(11)bbinsglobal(3)com(0)
-2/4/2021 9:31:50 AM 2658 PACKET  000002094C542900 UDP Snd 10.176.101.55   2a5c R Q [8085 A DR  NOERROR] A      (13)wstglbgalileo(11)bbinsglobal(3)com(0)
-2/4/2021 12:46:31 PM 2D48 PACKET  000002093308E8E0 UDP Rcv 10.58.32.12     f6f6 R Q [8584 A  R  REFUSED] SOA    (5)bbssc(5)local(0)
+2/4/2021 9:31:50 AM 14D8 PACKET  000002094C4C67D0 UDP Rcv 10.176.101.55   9b3b   Q [0001   D   NOERROR] A      (13)wstglbgalileo(11)xyzzzzglobal(3)com(0)
+2/4/2021 9:31:50 AM 2658 PACKET  000002094C542900 UDP Snd 10.176.101.55   2a5c R Q [8085 A DR  NOERROR] A      (13)wstglbgalileo(11)xyzzzzglobal(3)com(0)
+2/4/2021 12:46:31 PM 2D48 PACKET  000002093308E8E0 UDP Rcv 10.58.32.12     f6f6 R Q [8584 A  R  REFUSED] SOA    (5)aassp(5)local(0)
 
 Regex 
 http://fluentular.herokuapp.com/
 ^(?<Dnshost>\S+)\s+(?<Datetime>\d+[/]\d+[/]\d+\s+\d+[:]\d+[:]\d+\s+[AP]M)\s+(?<Thid>[0-9a-fA-F]+{4,4})\s+PACKET\s+(?<Pkid>[0-9a-fA-F]+{16,16})\s+(?<Proto>\S{3,3})\s+(?<SendReceive>\S{3,3})\s+(?<ClientIP>\S+)\s+(?<Xid>[0-9a-fA-F]+{4,4})\s+(?<QorR>\s+|R)\s+(?<OPcode>[QNU?])\s+\[(?<FlagH>[0-9a-fA-F]+{4,4})\s+(?<FlagA>.{6,6})(?<Response>\S+)\]\s+(?<QType>\S+)\s+(?<QName>\S+)..
 
-GLBWSTDC1.BBINSGLOBAL.COM 2/5/2021 2:46:46 PM 2D48 PACKET  00000209635208E0 UDP Snd 10.176.101.55   13ba R Q [8085 A DR  NOERROR] A     (15)atlveeamproxy02(11)bbinsglobal(3)com(0)\r
+MY.DOMAIN.COM 2/5/2021 2:46:46 PM 2D48 PACKET  00000209635208E0 UDP Snd 10.176.101.55   13ba R Q [8085 A DR  NOERROR] A     (15)xxxxxxxxxxxxxx(11)yyyyyyyyyy(3)com(0)\r
