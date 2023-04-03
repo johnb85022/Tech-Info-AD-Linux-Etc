@@ -152,6 +152,10 @@ https://github.com/johnb85022/Tech-Info-AD-Linux-Etc/blob/master/Syslog-Ng%20rem
 Major BL listing ...
 https://www.opendbl.net/
 
+Looking for a PTR record SOA? Odd task but can help map out DNS , etc. 
+Resolve-DnsName 18.0.20.172.in-addr.arpa. -Server 10.91.8.11
+
+
 
 ...
 
