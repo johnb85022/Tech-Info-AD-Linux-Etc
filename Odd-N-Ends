@@ -1,6 +1,16 @@
 
-Remember HOST keys are not user keys , some simple commands to help
+When installer is odd about not useing the whole disk, Ubuntu, Linux , LVM , 
+Tested, evenn when the disk is root file system. See if some space is free
+then extent to that free space. 
 
+vgdisplay
+lvdisplay
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+df -h
+resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+df -h
+
+Remember HOST keys are not user keys , some simple commands to help
 
 ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
 ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
@@ -11,11 +21,9 @@ ssh-keyscan HOSTNAME
 Very good and simple json to csv py script. Good py example. Node is the name of the array at the very start of the json stream. 
 https://github.com/vinay20045/json-to-csv/blob/master/json_to_csv.py
 
-
 JQ has a -j option that can help sending flows to a shell pipe , its a work 
 around , but can be good for a limited number of fields. 
 jq -j '.[]._source.layers.frame'  pcap.json |grep frame.len |head -n2
-
 
 Export only the stub from the MS DNS with powershell, note the filter -eq Stub
 # CSV !! 
@@ -80,6 +88,9 @@ dns.query.type == 6
 PTR only, handy when fixing up REV zone 
 dns.qry.type == 12 
 
+Tcpdump each way to filter out our own SSH session
+tcpdump 'port not 22' 
+tcpdump 'port not 22' -w mydump.pcap 
 
 I like this regex for IP sets
 grep -E "[[:space:]][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+"
