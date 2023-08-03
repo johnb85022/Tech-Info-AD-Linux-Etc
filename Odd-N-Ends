@@ -1,4 +1,10 @@
 
+Win DNS , Getting some spec info out of the logs , 
+My patter_sting was a NX domain for a spec host anme, reminder the MS log is (NUMBER)STRING format,
+Then I reduced it to just the Snd query replay, who asked for that name in the first place. 
+
+Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string"|Select-String -Pattern 'Snd' |Out-GridView 
+
 When installer is odd about not useing the whole disk, Ubuntu, Linux , LVM , 
 Tested, evenn when the disk is root file system. See if some space is free
 then extent to that free space. 
