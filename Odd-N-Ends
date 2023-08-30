@@ -1,4 +1,7 @@
 
+Greping a BIG file, help it so fater... 
+export LC_ALL=C
+
 Win DNS , Getting some spec info out of the logs , 
 my pattern_sting was a NX domain for a spec host name, reminder the MS log is (NUMBER)STRING format,
 then I reduced it to just the Snd query reply, who asked for that name in the first place. 
