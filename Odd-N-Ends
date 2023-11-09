@@ -1,5 +1,7 @@
 
-Greping a BIG file, help it so fater... 
+
+
+Greping a BIG file, help it makes it so much faster, handy with big files... 
 export LC_ALL=C
 
 Win DNS , Getting some spec info out of the logs , 
@@ -8,9 +10,21 @@ then I reduced it to just the Snd query reply, who asked for that name in the fi
 
 Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string"|Select-String -Pattern 'Snd' |Out-GridView 
 
+Few of the DNS logs peeks that I like, 
+
+$pattern_string="NXDOMAIN"
+Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string" | Select-String -Pattern 'Rcv'|Out-GridView 
+Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string" | Select-String -Pattern 'PTR'|Out-GridView 
+# Just a sample 
+get-content -Tail 1500 C:\windows\system32\LogFiles\dns.log | Out-GridView
+# How many of a thing
+Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string" | Select-String -Pattern 'PTR'| Measure-Object –Line|Out-GridView
+# fast ugly 
+Get-Content -ReadCount 100 C:\windows\system32\LogFiles\dns.log
+
 When installer is odd about not useing the whole disk, Ubuntu, Linux , LVM , 
-Tested, evenn when the disk is root file system. See if some space is free
-then extent to that free space. 
+Tested, even when the disk is root file system. See if some space is free
+then extend to that free space. 
 
 vgdisplay
 lvdisplay
