@@ -1,5 +1,16 @@
 
-
+HowTo JQ, hand example, good url , 
+https://linuxconfig.org/how-to-parse-a-json-file-from-linux-command-line-using-jq
+	read nsg 
+	jq .records[0].time 2021.05.15.NSG-123-890-XYZ.json
+	jq '.records[] | .properties.flows' sample.json
+	jq -r '.records[].time,.records[].macAddress' sample.json
+	? jack pot ?
+	jq -r '.records[] | "\(.properties.flows)"' sample.json
+	jq -r '.records[] | "\(.properties.flows)"' sample.json |grep -E -o -e '["]mac["][:]["][[:digit:]]+["]'
+	jq -r '.records[] | "\(.properties.flows)"' sample.json |grep -E -o -e '["]mac["][:]["][[:digit:]]+["][,]["]flowTuples["][:][[].*\]\}\]\}\]'
+	jq -r '.records[] | "\(.time)"' sample.json
+	jq -r '.records[] | "\(.properties.flows)"' sample.json
 
 Greping a BIG file, help it makes it so much faster, handy with big files... 
 export LC_ALL=C
