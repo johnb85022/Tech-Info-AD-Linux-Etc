@@ -1,4 +1,31 @@
 
+# a power shell look I have used a LOT, just a simple lop over a list
+# to do some work, to drive commands. 
+# A loop from simple input.txt file.
+write-host $ARGS[0]
+$a = @()
+$a = Get-Content $ARGS[0]
+
+$a|ForEach-Object {
+$var=$($_)
+#Some-cmd $var
+##$temp = $var -replace '"',''
+write-host $var
+# CMD add or remove # as needed, 
+# Add-DnsServerConditionalForwarderZone -Name $var -MasterServers 10.10.2.3,10.4.5.6 -ReplicationScope "Forest"
+# after 5 min, then test, 
+resolve-dnsname $var | fl
+Write-Host "Next ..."
+}
+Write-host "OK done ..."
+## $zonename=$var.split(",")[0]
+## write-host $zonename
+## $temp=$var.split(",")[2].split(' ')[0]
+## write-host $temp 
+## resolve-dnsname $zonename -server $dnshost 
+
+
+
 HowTo JQ, hand example, good url , 
 https://linuxconfig.org/how-to-parse-a-json-file-from-linux-command-line-using-jq
 	read nsg 
