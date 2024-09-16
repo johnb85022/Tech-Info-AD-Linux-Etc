@@ -1,4 +1,7 @@
 
+Make a randon string with openssl. 
+openssl rand -base64 32
+
 # a power shell look I have used a LOT, just a simple lop over a list
 # to do some work, to drive commands. 
 # A loop from simple input.txt file.
