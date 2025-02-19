@@ -175,6 +175,15 @@ dns.flags.response == 0 and ip.addr == 10.176.101.58
 That one name, and the one IP , 
 dns.qry.name contains "example.com" and ip.addr == 10.176.101.58
 dns and ip.addr == 10.176.101.58
+No answer codes for A dns QUERY, "No Such Name"
+dns.flags == 0x8183
+dns.flags == 0x8583 
+No Error 
+dns.flags.rcode == 000
+# Did not , odd? or bad filter dns.flags.rcode == 0011
+# funny, authoritative ==  1 can also be no such name, these two, 
+dns.flags == 0x8583 
+dns.flags.authoritative == 1
 
 
 Tcpdump each way to filter out our own SSH session
