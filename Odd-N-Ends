@@ -170,6 +170,11 @@ More Dns diplay filters ,
 dns.qry.name contains "google.com" 
 dns.qry.name contains "ams360.com" 
 dns.qry.name == "ams360.com" 
+Handy ones, show me responce to that one IP, 
+dns.flags.response == 0 and ip.addr == 10.176.101.58
+That one name, and the one IP , 
+dns.qry.name contains "example.com" and ip.addr == 10.176.101.58
+dns and ip.addr == 10.176.101.58
 
 
 Tcpdump each way to filter out our own SSH session
