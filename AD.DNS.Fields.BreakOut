@@ -1,0 +1,117 @@
+My Beark out of the DNS codes and fields, regex for DNS too. 
+Example of an SOA record:
+
+name	example.com
+record type	SOA
+MNAME	ns.primaryserver.com
+RNAME	admin.example.com
+SERIAL	1111111111
+REFRESH	86400
+RETRY	7200
+EXPIRE	4000000
+TTL	11200
+
+Some WireShark 
+ip.addr == 10.220.4.0/24
+
+CAP
+
+net 10.220.4.0 mask 255.255.255.0 
+net 10.220.4.4 or net 10.220.4.5 
+
+No answer codes for WS, might be more this is one. 
+dns.flags == 0x8183
+
+
+Header from a MS DNS log when created.
+
+Message logging key (for packets - other items use a subset of these fields):
+	Field #  Information         Values
+	-------  -----------         ------
+	   1     Date
+	   2     Time
+	   3     Thread ID
+	   4     Context
+	   5     Internal packet identifier
+	   6     UDP/TCP indicator
+	   7     Send/Receive indicator
+	   8     Remote IP
+	   9     Xid (hex)
+	  10     Query/Response      R = Response
+	                             blank = Query
+	  11     Opcode              Q = Standard Query
+	                             N = Notify
+	                             U = Update
+	                             ? = Unknown
+	  12     [ Flags (hex)
+	  13     Flags (char codes)  A = Authoritative Answer
+	                             T = Truncated Response
+	                             D = Recursion Desired
+	                             R = Recursion Available
+	  14     ResponseCode ]
+	  15     Question Type
+	  16     Question Name
+	  
+	
+Break out of each field from the example lines below, example of each data type and values.
+1- 2/4/2021 
+2- 9:31:50 AM 
+3- 14D8 
+4- PACKET
+5- 000002094C4C67D0
+6- UDP 
+7- Rcv 
+8- 10.176.101.55
+9- 9b3b
+10- can be blank or R
+11- Q
+12- [0001
+13- D -OR- A DR -OR DR 
+14- NOERROR ]
+15- A 
+16- (13)wstglbgalileo(11)bbinsglobal(3)com(0)
+
+The flag 12 13 14 start [ and end ]
+The question name have (#) that count the char in the segment 
+Two examples below. 
+
+12- Common [ then 4 digit then space 
+13- Common 'D' 'DR' 'A DR' OR blanks, blank is query, So 13 is Hex SPACE TO WORD 
+14- Common SERVFAIL NOERROR NXDOMAIN REFUSED ends in ] allways a WORD leader to ] 
+15- Common A PTR AAA SOA 
+
+Offical DNS and DNS Hex codes ref;
+https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml
+
+(?<QueryType>\s|R)\s \
+(?<Opcode>[A-Z]|\?)\s \
+(?<Flags>\[.*?\])\s+
+ 
+ 
+Hex Codes seen via sort uniq break down  12,13,14
+cat foo |cut -d '[' -f2|cut -d ']' -f1|sort -u  |grep -E -e "^[0-9]"
+0000       NOERROR
+0001   D   NOERROR
+0028       NOERROR
+0080       NOERROR
+00a8       NOERROR
+0180       FORMERR
+0384 A    NXDOMAIN
+2001   D   NOERROR
+8081   DR  NOERROR
+8084 A  R  NOERROR
+8085 A DR  NOERROR
+8281   DR SERVFAIL
+8381   DR NXDOMAIN
+8384 A  R NXDOMAIN
+8385 A DR NXDOMAIN
+8584 A  R  REFUSED
+
+Example AD DNS records
+2/4/2021 9:31:50 AM 14D8 PACKET  000002094C4C67D0 UDP Rcv 10.176.101.55   9b3b   Q [0001   D   NOERROR] A      (7)galileo(3)foo(3)com(0)
+
+DNS Regex 
+http://fluentular.herokuapp.com/
+^(?<Dnshost>\S+)\s+(?<Datetime>\d+[/]\d+[/]\d+\s+\d+[:]\d+[:]\d+\s+[AP]M)\s+(?<Thid>[0-9a-fA-F]+{4,4})\s+PACKET\s+(?<Pkid>[0-9a-fA-F]+{16,16})\s+(?<Proto>\S{3,3})\s+(?<SendReceive>\S{3,3})\s+(?<ClientIP>\S+)\s+(?<Xid>[0-9a-fA-F]+{4,4})\s+(?<QorR>\s+|R)\s+(?<OPcode>[QNU?])\s+\[(?<FlagH>[0-9a-fA-F]+{4,4})\s+(?<FlagA>.{6,6})(?<Response>\S+)\]\s+(?<QType>\S+)\s+(?<QName>\S+)..
+
+
