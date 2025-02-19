@@ -93,6 +93,22 @@ Export only the stub from the MS DNS with powershell, note the filter -eq Stub
 # CSV !! 
 get-DnsServerZone  |Where-Object -Property ZoneType -eq "Stub" |Select-Object Zonename|Get-DnsServerZone|select-object Zonename,zonetype, MasterServers  |export-csv -path .\mycsv.txt
 
+Looking for a PTR record SOA? Odd task but can help map out DNS , etc. 
+Resolve-DnsName 18.0.20.172.in-addr.arpa. -Server 10.91.8.11
+
+
+DNS log on a AD server, search for a thing, out-grid, Note the (#) format
+of MS log, not dot mind you, but the length of the query sting component. 
+Out-Grid is handy, once in grip EASY yo copy paste to excel. 
+
+$pattern_string="\(6\)ams360\(3\)com\(0\)"
+#$pattern_string="\(3\)bf"
+#Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string" 
+#Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string"|Select-String -Pattern 'Snd' |Out-GridView 
+Get-Content  C:\windows\system32\LogFiles\dns.log| select-string -Pattern "$pattern_string" |Out-GridView 
+# foo 
+
+
 Loop over the STUB export , test the name lookup and record details
 # A loop from simple input.txt file.
 write-host $ARGS[0]
@@ -115,8 +131,6 @@ $answer=$(resolve-dnsname $zonename -server $dnshost -QuickTimeout -ErrorAction 
 
 #write-host "$zonename $dnshost" $answer| measure-object -Character
 write-host "$zonename $dnshost" $answer.length
-
-
 }
 
 
@@ -128,6 +142,7 @@ grep -E "\S+[.]\S+[.]\S+" placeholder.txt |cut -d '.' -f2,3 |tr -s ' ' |tr -d ' 
 https://linux.die.net/man/1/grep
 [:alnum:], [:alpha:], [:cntrl:], [:digit:], [:graph:], [:lower:], [:print:], [:punct:], [:space:], [:upper:],
 and [:xdigit:]. For example, [[:alnum:]] means [0-9A-Za-z],
+
 
 Reminder, DNS record types info, 
 https://en.wikipedia.org/wiki/List_of_DNS_record_types
@@ -151,6 +166,11 @@ SOA only,
 dns.query.type == 6 
 PTR only, handy when fixing up REV zone 
 dns.qry.type == 12 
+More Dns diplay filters ,
+dns.qry.name contains "google.com" 
+dns.qry.name contains "ams360.com" 
+dns.qry.name == "ams360.com" 
+
 
 Tcpdump each way to filter out our own SSH session
 tcpdump 'port not 22' 
@@ -164,8 +184,10 @@ A number of INET sources use the MC ending, this tr can help, simple fast.
 # use tr to clean the file from dos to unix
 tr -d '\r' < "$NRD_DOMAINS" > "$CLEAN_DOMAINS"
 
+
 Some times a just want clean data. The <> killed the html lines, 
 cat placeholder.txt  |tr -d "[:blank:]" |tr -d '\r'|tr '[:upper:]' '[:lower:]' |grep -v -e "^$" -e "[><]" > fooroo
+
 
 Date from ansible , ansible_date_time to see all formats, etc. 
 ---
@@ -174,25 +196,34 @@ Date from ansible , ansible_date_time to see all formats, etc.
   tasks:
     - debug: var=ansible_date_time.iso8601
 
+
 Use find to look at the proc pid tables , this example the VmSawp size used. 
 find /proc/*/status -exec cat {} \; |grep -e '^Pid:' -e VmSwap
 
-useing pidof to look in detail at a set of pids of a name, pidstat can to the same, this is 
+
+Useing pidof to look in detail at a set of pids of a name, pidstat can to the same, this is 
 just another way to dig out details.
 pidof bash |xargs ps -up
+Reminder pgrep can look for just a user name. 
+pgrep -u johnb --list-name
+
 
 Handy use of grep , are the two files the same ? Note the order of the file names really changes things. 
 grep -vFxf yesterday.txt today.txt 
+
 
 Use file yesterday as the point of ref, the regeg to seek in the today file, in a way showing what has been added in to the
 today set. 
 grep -vFxf yesterday.txt today.txt
 
+
 What file and what line number we are talking about, the -n and -H are handy when debuging grep options. 
 grep -nHvFxf yesterday.txt today.txt
 
+
 If I flip the files, then I can see what has been dropped from today. 
 grep -vFxf today.txt yesterday.txt
+
 
 Handy tcpdumps I like.
 Good Web ref for tcpdump 
@@ -210,6 +241,97 @@ tcpdump '( (not arp) and (not port 22) and ( not port 68) )' -vv -A
 Simple watch this one IP to see the flows. 
 tcpdump -vv -i ens128 'host 10.10.10.10' 
 
+My tcpdump runner , for port 53, script, breaks up the files,
+port 53 was hard code not a var, e-net is a var, find cleaner 
+is build in, another cron to pull the files if you wanted sets.
+more ./stop-start-tcpdump.sh
+#!/bin/bash
+# I see if the tcpdump is running
+# stop and start it
+# clean up old files
+# all the hosty should be ens192
+# will have to find the ens is not ens192
+# -G how long to run, then exit
+# -w is the file name spec
+# -i the card to watch
+# full paths
+#
+####
+#set -x
+enetcard="ens160"
+duration="1800"
+MYTCP="/home/tcpdump"
+
+# syslog is my log file
+[ -d $MYTCP ] || {
+  echo "Home tcpdump is missing, Exiting $(date)..." | logger
+  exit
+  }
+
+find /home/tcpdump/ -type f  -name "*.pcap" -mtime +24 -delete
+
+# exit if stop file is in the folder
+[ -e /home/tcpdump/stop ] && {
+  echo "Stop file in the folder. Exiting..."
+  echo "Stop file in the folder. Exiting..."| logger
+  pkill tcpdump
+  exit
+}
+
+# is then stop it, sleep 1 then start it
+ cd $MYTCP
+ # echo "Debug tcpdump is running ..."
+ pgrep tcpdump  |logger
+ pkill tcpdump
+ # clean up over 5 hours this job is planed for 4 hour cron
+ find $MYTCP -name "nohup.out" -delete
+ find /home/tcpdump/ -type f -name "*.pcap" -mmin +300 -delete
+ # echo "Sleep then start..."
+ echo "Sleep then start $0 $(date) ..."| logger
+ sleep 1
+ nohup  /usr/sbin/tcpdump -i "$enetcard" 'port 53' -G "$duration" -w "$MYTCP"/$(uname -n).tcpdump-%m-%d-%H-%M-%S-%s.pcap > /var/log/tcpdump.log 2>&1 &
+## the end...##
+
+Script that pulled the tcpdumps , pcaps , to a place, 
+
+more go-fetch-tcpfiles.sh
+#!/bin/bash
+# I colelct fiels from the DNS hosts, the tcpdump may or may be on
+# but we fetch just the same,
+# -n and -v ops for for debug
+# logger cause we are lazzy...:)
+# lab is a test server, fyi
+# almost set up ansible from this host to do fetch,
+# if we more then this then that might be better option
+# errors to dev null , as hosts may not have a file
+# see stop file in the /home/tcpdump on the host
+# ansiable job to drop the file file and start stop, 2 crons on the hosts
+# RUN ME AS SVCANSIBLE
+
+# list="dnshostlab001"
+[ $UID == 0 ] && echo "Dont run me $0 as root, svcansible..." | logger
+
+list="dnshosteast001 dnshosteast002"
+
+for srv in $list
+do
+   ## echo "$srv"
+   echo "Starting $0 $(date) ..." | logger
+   # debug line
+   ## /usr/bin/rsync -avzrc "$srv":/home/tcpdump/*.pcap /home/piholetcp/
+   # prod line
+   /usr/bin/rsync -azrc "$srv":/home/tcpdump/*.pcap /home/piholetcp/ >/dev/null 2>/dev/null
+done
+# compress older files, older then 1440 min == one day 4320 is 3, and 2880 is 2
+# -f force , had odd case where gzip would not over right
+# the files, over 24 days , then poof bye, keep the house clean
+find /home/piholetcp/ -type f -name "*.pcap" -mmin +1440 -exec gzip -f {} \; >/dev/null 2>/dev/null
+# older then 24 days then remove them
+find /home/piholetcp/ -type f  -name "*.gz" -mtime +14 -delete  >/dev/null 2>/dev/null
+echo "Complete $0 $(date) ..." | logger
+#
+
+
 What day is it? Silly fun, not bad syntax examples. 
 ::::::::::::::
 friday-yet.sh
@@ -220,11 +342,14 @@ friday.yet.sh
 ::::::::::::::
 date |grep -q -e "Fri" && ( echo "FRIDAY" |cowsay|lolcat ) || echo no|cowsay|lolcat
 
+
 Handy nslookup option in windows nslookup, then do a zone.com. lookup, get you all the zone NS servers details. 
 set querytype=all 
 
+
 Ever just wanted the inventory as a list, JQ helps, then I just tossed the rest over the side. 
 [ansible@srv005 ~]$ foo=$(ansible-inventory --list |jq '.[].hosts|values' |tr ',' ' '|tr -d '[]' |tr '\n' ' '|tr -s ' '|tr -d '"')
+
 
 Bling all the keys for the known hosts , drop context to the .ssh/know_hosts, bypass the need to edit the sshd options. 
 [ansible@srv005 ~]$ for x in $foo; do  echo $x ; ssh-keyscan $x ;done
@@ -236,12 +361,9 @@ Handy DNS info,
 See para 4.1.  RFC 1918 Zones
 https://github.com/johnb85022/Tech-Info-AD-Linux-Etc/blob/master/Syslog-Ng%20remote.conf
 
+
 Major BL listing ...
 https://www.opendbl.net/
-
-Looking for a PTR record SOA? Odd task but can help map out DNS , etc. 
-Resolve-DnsName 18.0.20.172.in-addr.arpa. -Server 10.91.8.11
-
 
 
 ...
