@@ -180,10 +180,17 @@ dns.flags == 0x8183
 dns.flags == 0x8583 
 No Error 
 dns.flags.rcode == 000
-# Did not , odd? or bad filter dns.flags.rcode == 0011
+# Did not , odd? or bad filter dns.flags.rcode == 0011 , casue its bits, change to dec 
+dns.flags.rcode == 2 "Server Fail"
+dns.flags.rcode == 3 "No Such Name"
+dns.flags.rcode == 5 "Refused"
 # funny, authoritative ==  1 can also be no such name, these two, 
 dns.flags == 0x8583 
 dns.flags.authoritative == 1
+Dns, GO POUND SAND CLOW BOY
+dns.flags == 0x8005
+See https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-5
+for OpCodes defined , 
 
 
 Tcpdump each way to filter out our own SSH session
