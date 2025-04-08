@@ -1,0 +1,23 @@
+$Username = "jbennett";
+$Password = "MyPassword";
+$path = "C:\Users\jbennett\Documents\foobar.User.Details.18102021.csv"
+
+
+function Send-ToEmail([string]$email, [string]$attachmentpath){
+
+    $message = new-object Net.Mail.MailMessage;
+    $message.From = "jbennett@foo.com";
+    $message.To.Add($email);
+    $message.Subject = "Reports here...";
+    $message.Body = "See Attached...";
+    $attachment = New-Object Net.Mail.Attachment($attachmentpath);
+    $message.Attachments.Add($attachment);
+
+    $smtp = new-object Net.Mail.SmtpClient("10.10.10.10", "25");
+    $smtp.EnableSSL = $false;
+    $smtp.Credentials = New-Object System.Net.NetworkCredential($Username, $Password);
+    $smtp.send($message);
+    write-host "Mail Sent" ; 
+    $attachment.Dispose();
+ }
+Send-ToEmail  -email "jbennett@foo.com" -attachmentpath $path;
