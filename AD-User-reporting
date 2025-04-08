@@ -1,0 +1,64 @@
+
+# Who JB 602-501-7702 jbennett@foo.com
+# What AD report of users
+# When manual
+# Why to help track users
+# Tested , run as admin, from ISE, no raw PS yet. 
+################################################
+
+
+import-module ActiveDirectory
+
+$Collection = @()
+$obj = New-Object PsObject
+
+# basic user reporting
+#$OU="CN=Users,DC=foo,DC=com"
+$OU="DC=foobar,DC=com"
+
+$result=(Get-ADUser  -Properties * -Filter * -SearchBase $OU)
+
+$result | foreach-object {
+
+# pick the fields f is a temp var
+
+$SamAccountName=$_.SamAccountName
+$DistinguishedName=$_.DistinguishedName
+$UserPrincipalName=$_.UserPrincipalName
+$PasswordExpired=$_.PasswordExpired
+$PasswordLastSet=$_.PasswordLastSet
+$LastLogonDate=$_.LastLogonDate
+$Enabled=$_.Enabled
+
+
+# calc date of expired
+$DateExpired=$(get-date "$PassWordLastSet" ).AddDays(+179)
+
+# Read as, the name of the file is, then add to the object obj a note property
+# 7 fields from the AD , 1 calc field
+$f="SamAccount";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($SamAccountName)
+$f="DistinguishedName";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($DistinguishedName)
+$f="UserPrincipalName";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($UserPrincipalName)
+$f="PasswordExpired";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($PasswordExpired)
+$f="PasswordLastSet";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($PasswordLastSet)
+$f="LastLogonDate";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($LastLogonDate)
+$f="DateExpired";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($DateExpired)
+$f="Enabled";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($Enabled)
+
+# save the template syntax 
+# $f="";$obj | Add-Member -Force -MemberType NoteProperty "$f" -value $($)
+
+# ok each loop pile in to the collection, then obj is reset for the next loop over 
+$Collection += $obj
+
+# obj is sort of temp var, reset after save the data to collection 
+$obj = New-Object PsObject
+ }
+
+# collection to disk 
+$Collection |Export-Csv -NoTypeInformation -Delimiter ';' -Path AD.User.Details.$(get-date -format ddMMyyyy).csv
+
+
+
+
+
