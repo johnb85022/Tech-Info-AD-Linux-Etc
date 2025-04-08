@@ -1,4 +1,16 @@
 
+Simple power shell , skip 5 files then clean 
+# I clean older files from the folder, nothing fancy, keep last 5 
+# thus skip 5 
+# the folder
+$FOLDER = "D:\App\Data\Old"
+# Read Folder, skip last 5 , log.log is the log, then after log do the remove.
+# Debug
+Get-ChildItem $FOLDER -file | Sort-Object LastWriteTime -Descending | Select-Object -Skip 5 |Out-File -FilePath D:\Scripts\log.log
+# Real clean
+#Get-ChildItem $FOLDER -file | Sort-Object LastWriteTime -Descending | Select-Object -Skip 5 |Remove-Item 
+### 
+
 Make a randon string with openssl. 
 openssl rand -base64 32
 
