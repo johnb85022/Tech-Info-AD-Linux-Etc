@@ -1,4 +1,15 @@
 
+Cause I can, A grep regex dns logs 
+###############
+# this line reads the whole input, hint ./script > foo.txt or ./script | tee foo.txt
+## grep -v -e "E02-SMTP.foobar.COM" $(ls -Art mslog/file.*.log |tail -1|head -1 ) |grep -E -e "UDP Snd" -e "UDP Rcv" |grep -E -o -
+e "UDP\sSnd\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+" -o -e "UDP\sRcv\s[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][
+[:digit:]]+" -o -e "\"client_addr\"\:\"[[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+[.][[:digit:]]+\"" -o -e "\(.*\)" -o -e "[[:digit:]]+[
+/][[:digit:]]+[/][[:digit:]]+[ ][[:digit:]]+[:][[:digit:]]+[:][[:digit:]]+[ ][AP][M]" | tr -s ' '|tr '\011' ' ' |paste - - - -
+# the end.
+
+
+
 Simple power shell , skip 5 files then clean 
 # I clean older files from the folder, nothing fancy, keep last 5 
 # thus skip 5 
