@@ -1,4 +1,10 @@
 
+The mega collection all about IP masquerade. lot of comamnds and info
+in one place. 
+
+http://linuxdocs.org/HOWTOs/IP-Masquerade-HOWTO.html#toc3
+
+
 Cause I can, A grep regex dns logs 
 ###############
 # this line reads the whole input, hint ./script > foo.txt or ./script | tee foo.txt
