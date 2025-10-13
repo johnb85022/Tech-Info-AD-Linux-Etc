@@ -122,6 +122,30 @@ Export only the stub from the MS DNS with powershell, note the filter -eq Stub
 # CSV !! 
 get-DnsServerZone  |Where-Object -Property ZoneType -eq "Stub" |Select-Object Zonename|Get-DnsServerZone|select-object Zonename,zonetype, MasterServers  |export-csv -path .\mycsv.txt
 
+Fancy MS dns export , edit the export, grid or csv , parts from web , 
+See https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7.5
+for select-string options, 
+# some times this is ok 
+# get-DnsServerZone  |Select-Object Zonename|Get-DnsServerZone|select-object Zonename,zonetype, MasterServers  |export-csv -path .\mycsv.txt
+
+# fancy loop, gets all the records in each zone 
+# Get a list of all DNS zone names
+# all # $zones = (Get-DnsServerZone).ZoneName
+# not in-addr.arpa filter -Notmatch 
+$zones = (Get-DnsServerZone).ZoneName  |Select-String "in-addr.arpa" -NotMatch
+
+# Loop through each zone and export its records
+foreach ($zone in $zones) {
+    # Get all resource records for the current zone
+    $zoneData = Get-DnsServerResourceRecord -ZoneName $zone
+
+    # Export the records to a CSV file named after the zone
+    #$zoneData | Export-Csv -Path "C:\Users\entadmin\$($zone)_DNSRecords.csv" -NoTypeInformation
+    # fancy pants out-gridview, hady for copy paste 
+    $zoneData | Out-GridView -Title "$zone" 
+}
+
+
 Looking for a PTR record SOA? Odd task but can help map out DNS , etc. 
 Resolve-DnsName 18.0.20.172.in-addr.arpa. -Server 10.91.8.11
 
