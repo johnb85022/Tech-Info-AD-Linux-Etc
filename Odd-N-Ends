@@ -144,7 +144,13 @@ foreach ($zone in $zones) {
     # fancy pants out-gridview, hady for copy paste 
     $zoneData | Out-GridView -Title "$zone" 
 }
-
+Watch out , make sure IP is in the file,
+ConvertTo-Json was able to show that the Ip was a 'external object' , 
+CimClass              : root/Microsoft/Windows/DNS:DnsServerResourceRecord
+Get-DnsServerResourceRecord -ZoneName axiastrategies.com |Format-Table -AutoSize
+Get-DnsServerResourceRecord -ZoneName axiastrategies.com |Format-Table -AutoSize|   Out-File myfoo.txt
+Out-GridView handy, BUT, if you have 100 zones will have 100 win, 
+If big, then -Note method is better, 
 
 Looking for a PTR record SOA? Odd task but can help map out DNS , etc. 
 Resolve-DnsName 18.0.20.172.in-addr.arpa. -Server 10.91.8.11
